@@ -1,0 +1,181 @@
+[
+  {
+    "id": 1,
+    "name": "Cosmic Ring",
+    "category": "Jewellery",
+    "price": 299,
+    "emoji": "??",
+    "description": "Elegant sterling silver ring with a celestial design. Perfect for cosmic lovers.",
+    "tags": [
+      "Ring",
+      "Premium"
+    ],
+    "stock": true,
+    "customizable": true,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 2,
+    "name": "Star Necklace",
+    "category": "Jewellery",
+    "price": 399,
+    "emoji": "?",
+    "description": "Timeless star-shaped pendant necklace. A symbol of hope and guidance.",
+    "tags": [
+      "Necklace",
+      "Premium"
+    ],
+    "stock": true,
+    "customizable": true,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 3,
+    "name": "Moon Earrings",
+    "category": "Jewellery",
+    "price": 249,
+    "emoji": "??",
+    "description": "Delicate crescent moon earrings. Perfect for anyone who loves the night sky.",
+    "tags": [
+      "Earrings"
+    ],
+    "stock": true,
+    "customizable": true,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 4,
+    "name": "Galaxy Bracelet",
+    "category": "Jewellery",
+    "price": 349,
+    "emoji": "??",
+    "description": "Stunning bracelet featuring miniature planets. The universe on your wrist.",
+    "tags": [
+      "Bracelet",
+      "Premium"
+    ],
+    "stock": true,
+    "customizable": true,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 5,
+    "name": "Celestial Pin",
+    "category": "Jewellery",
+    "price": 199,
+    "emoji": "?",
+    "description": "Shimmering celestial pin to add sparkle to your outfit. A cosmic touch.",
+    "tags": [
+      "Pin",
+      "Accessories"
+    ],
+    "stock": false,
+    "customizable": true,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 6,
+    "name": "Nebula Pendant",
+    "category": "Jewellery",
+    "price": 379,
+    "emoji": "??",
+    "description": "Colorful nebula-inspired pendant. Wear the cosmos close to your heart.",
+    "tags": [
+      "Pendant",
+      "Premium"
+    ],
+    "stock": true,
+    "customizable": true,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 7,
+    "name": "Articulated Dragon",
+    "category": "Toys",
+    "price": 299,
+    "emoji": "??",
+    "description": "Flexible 3D printed dragon that bends and moves. A favourite for collectors.",
+    "tags": [
+      "Dragon",
+      "3D Printed",
+      "Premium"
+    ],
+    "stock": true,
+    "customizable": false,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 8,
+    "name": "Infinity Fidget",
+    "category": "Fidgets",
+    "price": 149,
+    "emoji": "??",
+    "description": "Satisfying pocket fidget, 3D printed for endless spinning fun.",
+    "tags": [
+      "Fidget",
+      "3D Printed"
+    ],
+    "stock": true,
+    "customizable": false,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 9,
+    "name": "Flexi Snake",
+    "category": "Toys",
+    "price": 199,
+    "emoji": "??",
+    "description": "Flexible articulated snake, printed layer by layer. A great desk buddy.",
+    "tags": [
+      "Snake",
+      "3D Printed"
+    ],
+    "stock": true,
+    "customizable": false,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 10,
+    "name": "Modern Mini Vase",
+    "category": "Decor",
+    "price": 249,
+    "emoji": "??",
+    "description": "Minimal 3D printed decor piece for a modern, clean look.",
+    "tags": [
+      "Vase",
+      "Decor",
+      "3D Printed"
+    ],
+    "stock": false,
+    "customizable": false,
+    "image": "",
+    "images": []
+  },
+  {
+    "id": 11,
+    "name": "Mini Animal Set",
+    "category": "Sets",
+    "price": 399,
+    "emoji": "??",
+    "description": "Cute miniature animal collection - a perfect gift set for kids and collectors.",
+    "tags": [
+      "Animals",
+      "Gift Set",
+      "3D Printed",
+      "Premium"
+    ],
+    "stock": true,
+    "customizable": false,
+    "image": "",
+    "images": []
+  }
+]

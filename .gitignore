@@ -1,0 +1,21 @@
+# CosmicCorner — files that stay LOCAL (not uploaded to the hosted repo)
+# The admin tool needs a real computer (writes files + pushes to git),
+# so it must never be part of the repo that gets hosted.
+
+server.py
+admin.html
+admin.css
+admin.js
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Temp / backup files
+*.tmp
+*.bak
