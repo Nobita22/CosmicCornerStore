@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>CosmicCorner - 3D Printed Wonders & Cosmic Jewellery</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" href="favicon.ico" sizes="32x32">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -277,6 +279,11 @@
     <p>© 2026 CosmicCorner. All rights reserved. ✨</p>
   </footer>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    }
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
