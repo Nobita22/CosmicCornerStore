@@ -171,8 +171,11 @@ function renderProducts() {
   }
 
   emptyState.style.display = 'none';
-  grid.innerHTML = filteredProducts.map(p => `
-    <div class="product-card reveal" onclick="openProductDetail(${p.id})">
+  grid.innerHTML = filteredProducts.map(p => {
+    const inCart = cart[p.id] ? cart[p.id].qty : 0;
+    const canAdd = !!p.stock;
+    return `
+    <div class="product-card reveal ${inCart ? 'in-cart' : ''}" data-id="${p.id}" onclick="openProductDetail(${p.id})">
       <div class="product-image">${productVisual(p)}</div>
       <div class="product-info">
         <small>${p.category}</small>
@@ -181,15 +184,45 @@ function renderProducts() {
         <div class="stock-badge ${p.stock ? 'stock-in' : 'stock-out'}">
           ${p.stock ? '✓ In Stock' : '✗ Out of Stock'}
         </div>
-        <button class="add-btn" onclick="event.stopPropagation(); addToCart(${p.id}, 1);" ${p.stock ? '' : 'disabled'}>
-          ${p.stock ? 'Add to Cart +' : 'Out of Stock'}
+        <button class="add-btn card-add-btn" style="${inCart ? 'display:none' : ''}"
+                onclick="event.stopPropagation(); addToCart(${p.id}, 1);" ${canAdd ? '' : 'disabled'}>
+          ${canAdd ? 'Add to Cart +' : 'Out of Stock'}
         </button>
+        <div class="card-qty-control" style="${inCart ? 'display:flex' : 'display:none'}">
+          <button class="card-qty-btn" onclick="event.stopPropagation(); updateQty(${p.id}, -1);" title="Decrease quantity">−</button>
+          <span class="card-qty-count">${inCart || 1}</span>
+          <button class="card-qty-btn" onclick="event.stopPropagation(); updateQty(${p.id}, 1);" title="Increase quantity">+</button>
+        </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 
   initReveal();
   initTilt();
+}
+
+/* Refresh only the add/qty control of each card (no full re-render,
+   so the scroll position, reveal state and tilt stay untouched). */
+function refreshCardControls() {
+  document.querySelectorAll('.product-card').forEach(card => {
+    const id = Number(card.dataset.id);
+    const addBtn = card.querySelector('.card-add-btn');
+    const ctrl = card.querySelector('.card-qty-control');
+    const count = card.querySelector('.card-qty-count');
+    if (!addBtn || !ctrl || !count) return;
+
+    const qty = cart[id] ? cart[id].qty : 0;
+    if (qty > 0) {
+      addBtn.style.display = 'none';
+      ctrl.style.display = 'flex';
+      count.textContent = qty;
+      card.classList.add('in-cart');
+    } else {
+      addBtn.style.display = '';
+      ctrl.style.display = 'none';
+      card.classList.remove('in-cart');
+    }
+  });
 }
 
 // ==================== FILTERS ====================
@@ -314,6 +347,7 @@ function addToCart(id, qty = 1) {
   }
   cart[id].qty += qty;
   updateCart();
+  refreshCardControls();
   showToast(`${product.emoji} Added "${product.name}" to cart`);
   bounceCart();
 }
@@ -321,6 +355,7 @@ function addToCart(id, qty = 1) {
 function removeFromCart(id) {
   delete cart[id];
   updateCart();
+  refreshCardControls();
 }
 
 function updateQty(id, change) {
@@ -328,8 +363,11 @@ function updateQty(id, change) {
     cart[id].qty += change;
     if (cart[id].qty <= 0) {
       removeFromCart(id);
+      const product = products.find(p => p.id === id);
+      if (product) showToast(`🗑️ Removed "${product.name}" from cart`);
     } else {
       updateCart();
+      refreshCardControls();
     }
   }
 }
