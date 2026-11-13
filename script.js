@@ -6,7 +6,7 @@
    ============================================================ */
 
 // ==================== CONFIG ====================
-const WHATSAPP_NUMBER = "918341481888";   // WhatsApp number for orders
+const WHATSAPP_NUMBER = "917671824826";   // WhatsApp number for orders
 const BRAND = "CosmicCorner";
 
 // ==================== STATE ====================
