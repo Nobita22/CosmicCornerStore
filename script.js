@@ -2,11 +2,10 @@
    CosmicCorner - Combined Shop Script
    - Products loaded from products.json (separate data file)
    - Theme behaviour from index.html (CosmicCorner shop)
-   - Sections & WhatsApp flow from index2.html (PRINTPLAY)
+   - Cart & order flow: POSTs to a Cloudflare Worker that forwards to Telegram
    ============================================================ */
 
 // ==================== CONFIG ====================
-const WHATSAPP_NUMBER = "917671824826";   // WhatsApp number for orders
 const BRAND = "CosmicCorner";
 
 // ==================== STATE ====================
@@ -429,7 +428,34 @@ function toggleCart() {
   document.getElementById('cartModal').classList.toggle('active');
 }
 
-// ==================== WHATSAPP FLOWS ====================
+// ==================== ORDER / REQUEST FLOWS ====================
+// Orders and product requests are POSTed to a Cloudflare Worker which
+// forwards them straight to Telegram. (This replaces the old WhatsApp links.)
+const ORDER_ENDPOINT = "https://cosmiccorner.sksameer-vsh.workers.dev";
+
+async function postToTelegram(payload) {
+  let res;
+  try {
+    res = await fetch(ORDER_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (networkErr) {
+    // fetch() rejects on network failure or a CORS block. The worker only
+    // whitelists https://www.cosmiccorner.in (see README/worker config),
+    // so local testing (127.0.0.1) or the github.io URL will be blocked.
+    const where = location.origin;
+    throw new Error(
+      'Could not reach the order service from ' + where + '.\n' +
+      'The order worker only accepts requests from https://www.cosmiccorner.in — ' +
+      'open the shop on that domain to place the order.'
+    );
+  }
+  if (!res.ok) throw new Error("Order service responded " + res.status);
+  return res.json().catch(() => ({}));
+}
+
 function checkout() {
   if (Object.keys(cart).length === 0) {
     alert('Your cart is empty!');
@@ -439,66 +465,99 @@ function checkout() {
   document.getElementById('checkoutModal').classList.add('active');
 }
 
-document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const fullName = document.getElementById('fullName').value;
-  const phone = document.getElementById('phone').value;
-  const email = document.getElementById('email').value;
-  const address = document.getElementById('address').value;
-  const city = document.getElementById('city').value;
-  const postalCode = document.getElementById('postalCode').value;
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalText = submitBtn ? submitBtn.textContent : '';
 
-  let orderText = `*${BRAND} Order*\n\n`;
-  orderText += `*Customer Details:*\n`;
-  orderText += `Name: ${fullName}\n`;
-  orderText += `Phone: ${phone}\n`;
-  orderText += `Email: ${email}\n`;
-  orderText += `Address: ${address}, ${city} - ${postalCode}\n\n`;
-  orderText += `*Order Details:*\n`;
+  const customer = {
+    name: document.getElementById('fullName').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    address: [
+      document.getElementById('address').value.trim(),
+      document.getElementById('city').value.trim(),
+      document.getElementById('postalCode').value.trim()
+    ].filter(Boolean).join(', ')
+  };
 
-  let totalPrice = 0;
-  Object.values(cart).forEach(item => {
-    const itemTotal = item.price * item.qty;
-    orderText += `${item.name} x${item.qty} = ₹${itemTotal}\n`;
-    totalPrice += itemTotal;
-  });
+  const items = Object.entries(cart).map(([id, item]) => ({
+    id: Number(id),
+    name: item.name,
+    quantity: item.qty,
+    price: item.price
+  }));
 
-  orderText += `\n*Total: ₹${totalPrice}*`;
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Sending order...';
+  }
 
-  const encodedMessage = encodeURIComponent(orderText);
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+  try {
+    await postToTelegram({ customer: customer, items: items });
 
-  cart = {};
-  updateCart();
-  document.getElementById('checkoutModal').classList.remove('active');
-  document.getElementById('checkoutForm').reset();
+    cart = {};
+    updateCart();
+    refreshCardControls();
+    document.getElementById('checkoutModal').classList.remove('active');
+    document.getElementById('checkoutForm').reset();
+    showToast('Order sent — we will contact you shortly!', '📨');
+  } catch (err) {
+    alert('Could not send your order: ' + err.message + '\n\nPlease try again in a moment.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  }
 });
 
-document.getElementById('requestForm').addEventListener('submit', (e) => {
+document.getElementById('requestForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalText = submitBtn ? submitBtn.textContent : '';
+
   const product = products.find(p => p.id === currentDetailProductId);
-  const name = document.getElementById('requestName').value;
-  const phone = document.getElementById('requestPhone').value;
-  const email = document.getElementById('requestEmail').value;
-  const details = document.getElementById('requestDetails').value;
+  const name = document.getElementById('requestName').value.trim();
+  const phone = document.getElementById('requestPhone').value.trim();
+  const email = document.getElementById('requestEmail').value.trim();
+  const details = document.getElementById('requestDetails').value.trim();
 
-  let message = `*Product Request - ${BRAND}*\n\n`;
-  message += `Product: ${product ? product.name + ' ' + product.emoji : 'Unknown'}\n`;
-  message += `Status: Currently Out of Stock\n\n`;
-  message += `*Customer Details:*\n`;
-  message += `Name: ${name}\n`;
-  message += `Phone: ${phone}\n`;
-  message += `Email: ${email}\n\n`;
-  message += `*Request Details:*\n`;
-  message += `${details || 'No additional details'}\n\n`;
-  message += `Please notify me when this item is back in stock!`;
+  const customer = {
+    name: name,
+    phone: phone,
+    email: email,
+    address: details || 'Product request (out of stock)'
+  };
 
-  const encodedMessage = encodeURIComponent(message);
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+  const items = [{
+    id: currentDetailProductId,
+    name: '🔔 REQUEST: ' + (product ? product.name : 'Unknown product') + ' (out of stock)',
+    quantity: 1,
+    price: 0
+  }];
 
-  document.getElementById('requestModal').classList.remove('active');
-  document.getElementById('requestForm').reset();
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Sending request...';
+  }
+
+  try {
+    await postToTelegram({ customer: customer, items: items, type: 'request' });
+
+    document.getElementById('requestModal').classList.remove('active');
+    document.getElementById('requestForm').reset();
+    showToast('Request sent — we will notify you when it is back in stock!', '🔔');
+  } catch (err) {
+    alert('Could not send your request: ' + err.message + '\n\nPlease try again in a moment.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  }
 });
 
 // ==================== MODAL HELPERS ====================
