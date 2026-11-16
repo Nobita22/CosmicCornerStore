@@ -1,12 +1,13 @@
 [
   {
     "order_id": "CC-261113-7F3K",
-    "status": "delivered",
+    "status": "shipped",
     "placed_at": "2026-11-13T21:40:00+05:30",
-    "updated_at": "2026-11-14T10:00:00+05:30",
+    "updated_at": "2026-11-14T09:15:00+05:30",
     "customer_name": "Sameer",
     "item_count": 2,
     "total": 598,
-    "items_summary": "Cosmic Ring x1, Star Necklace x1"
+    "items_summary": "Cosmic Ring x1, Star Necklace x1",
+    "note": "Sample order - safe to delete"
   }
 ]
