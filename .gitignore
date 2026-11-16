@@ -23,3 +23,5 @@ desktop.ini
 # Temp / backup files
 *.tmp
 *.bak
+# Local order database (customer PII)
+orders.db
