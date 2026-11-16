@@ -1356,6 +1356,193 @@ nav a:hover::after { width: 100%; }
   box-shadow: 0 12px 34px rgba(255, 215, 0, 0.28);
 }
 
+/* --- order success panel + tracking --- */
+
+.order-success {
+  text-align: center;
+  padding: 6px 0 0;
+}
+
+.order-success-icon {
+  font-size: 54px;
+  margin-bottom: 8px;
+  animation: floaty 2.6s ease-in-out infinite;
+}
+
+.order-success h3 {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.order-success-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+}
+
+.order-id-box {
+  display: inline-block;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px dashed rgba(255, 215, 0, 0.55);
+  border-radius: 12px;
+  padding: 14px 24px;
+  margin-bottom: 12px;
+  user-select: all;
+}
+
+.order-success-hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.track-loading,
+.track-miss {
+  text-align: center;
+  padding: 26px 10px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+}
+
+.track-miss-icon { font-size: 34px; margin-bottom: 8px; }
+
+.track-miss-hint {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 8px;
+}
+
+.track-miss code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.track-card {
+  margin-top: 22px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.track-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.track-id {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #ffd700;
+}
+
+.track-placed {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 4px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  border: 1px solid transparent;
+}
+
+.status-pending { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: rgba(255, 255, 255, 0.25); }
+.status-confirmed { background: rgba(255, 215, 0, 0.15); color: #ffd700; border-color: rgba(255, 215, 0, 0.45); }
+.status-packed { background: rgba(255, 165, 0, 0.15); color: #ffb347; border-color: rgba(255, 165, 0, 0.45); }
+.status-shipped { background: rgba(96, 165, 250, 0.15); color: #93c5fd; border-color: rgba(96, 165, 250, 0.45); }
+.status-delivered { background: rgba(74, 222, 128, 0.15); color: #4ade80; border-color: rgba(74, 222, 128, 0.45); }
+.status-cancelled { background: rgba(248, 113, 113, 0.15); color: #f87171; border-color: rgba(248, 113, 113, 0.45); }
+
+.track-timeline {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 20px 0 4px;
+}
+
+.track-step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  opacity: 0.4;
+}
+
+.track-step.done { opacity: 1; }
+
+.track-dot {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0 auto 8px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.track-step.done .track-dot {
+  background: linear-gradient(135deg, #fff, #ffd700);
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+.track-step-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.track-cancelled {
+  margin: 18px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: #fca5a5;
+  font-size: 13px;
+  text-align: center;
+}
+
+.track-details {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 14px;
+  margin-top: 16px;
+}
+
+.track-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.track-row span:first-child { color: rgba(255, 255, 255, 0.55); }
+.track-row span:last-child { font-weight: 700; text-align: right; }
+
 /* ============================================================
    GENERIC MODALS (cart / checkout)
    ============================================================ */

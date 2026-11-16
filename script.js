@@ -432,6 +432,28 @@ function toggleCart() {
 // Orders and product requests are POSTed to a Cloudflare Worker which
 // forwards them straight to Telegram. (This replaces the old WhatsApp links.)
 const ORDER_ENDPOINT = "https://cosmiccorner.sksameer-vsh.workers.dev";
+const ORDERS_JSON = "orders.json";
+const ORDER_STATUSES = ['pending', 'confirmed', 'packed', 'shipped', 'delivered', 'cancelled'];
+
+/* Order IDs look like CC-261113-7F3K: CosmicCorner + date + random suffix */
+function generateOrderId() {
+  const d = new Date();
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `CC-${yy}${mm}${dd}-${rand}`;
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  return d.toLocaleString('en-IN', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
 
 async function postToTelegram(payload) {
   let res;
@@ -462,6 +484,7 @@ function checkout() {
     return;
   }
   document.getElementById('cartModal').classList.remove('active');
+  resetCheckoutPanel();
   document.getElementById('checkoutModal').classList.add('active');
 }
 
@@ -489,20 +512,27 @@ document.getElementById('checkoutForm').addEventListener('submit', async (e) => 
     price: item.price
   }));
 
+  const orderId = generateOrderId();
+  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Sending order...';
   }
 
   try {
-    await postToTelegram({ customer: customer, items: items });
+    await postToTelegram({
+      order_id: orderId,
+      customer: customer,
+      items: items,
+      total: total
+    });
 
     cart = {};
     updateCart();
     refreshCardControls();
-    document.getElementById('checkoutModal').classList.remove('active');
     document.getElementById('checkoutForm').reset();
-    showToast('Order sent — we will contact you shortly!', '📨');
+    showOrderSuccess(orderId);
   } catch (err) {
     alert('Could not send your order: ' + err.message + '\n\nPlease try again in a moment.');
   } finally {
@@ -512,6 +542,104 @@ document.getElementById('checkoutForm').addEventListener('submit', async (e) => 
     }
   }
 });
+
+/* ---------- order number shown to the customer ---------- */
+let lastOrderId = '';
+
+function showOrderSuccess(orderId) {
+  lastOrderId = orderId;
+  document.getElementById('orderIdBox').textContent = orderId;
+  document.getElementById('checkoutForm').style.display = 'none';
+  document.getElementById('orderSuccess').style.display = 'block';
+  showToast('Order sent — your ID is ' + orderId, '📨');
+}
+
+function resetCheckoutPanel() {
+  document.getElementById('orderSuccess').style.display = 'none';
+  document.getElementById('checkoutForm').style.display = '';
+}
+
+/* ---------- order tracking ---------- */
+async function fetchOrders() {
+  const res = await fetch(ORDERS_JSON + '?t=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('could not load orders.json');
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+function statusBadge(status) {
+  const s = (status || 'pending').toLowerCase();
+  return `<span class="status-badge status-${s}">${s.toUpperCase()}</span>`;
+}
+
+function renderTrackResult(order, query) {
+  const box = document.getElementById('trackResult');
+  box.style.display = 'block';
+
+  if (!order) {
+    box.innerHTML = `
+      <div class="track-miss">
+        <div class="track-miss-icon">🔍</div>
+        <p>No order found for <strong>${query}</strong>.</p>
+        <p class="track-miss-hint">Double-check the ID from your confirmation. It looks like <code>CC-261113-7F3K</code>.</p>
+      </div>`;
+    return;
+  }
+
+  const status = (order.status || 'pending').toLowerCase();
+  const idx = ORDER_STATUSES.indexOf(status);
+  const steps = ['pending', 'confirmed', 'packed', 'shipped', 'delivered'];
+
+  const timeline = steps.map((step, i) => {
+    const done = idx >= ORDER_STATUSES.indexOf(step) && status !== 'cancelled';
+    return `<div class="track-step ${done ? 'done' : ''}">
+        <span class="track-dot"></span>
+        <span class="track-step-label">${step}</span>
+      </div>`;
+  }).join('');
+
+  box.innerHTML = `
+    <div class="track-card">
+      <div class="track-head">
+        <div>
+          <div class="track-id">${order.order_id}</div>
+          <div class="track-placed">Placed ${formatDate(order.placed_at)}</div>
+        </div>
+        ${statusBadge(status)}
+      </div>
+
+      ${status === 'cancelled'
+        ? '<div class="track-cancelled">This order was cancelled. Contact us if this looks wrong.</div>'
+        : `<div class="track-timeline">${timeline}</div>`}
+
+      <div class="track-details">
+        ${order.items_summary ? `<div class="track-row"><span>Items</span><span>${order.items_summary}</span></div>` : ''}
+        ${order.item_count ? `<div class="track-row"><span>Quantity</span><span>${order.item_count} item(s)</span></div>` : ''}
+        ${order.total ? `<div class="track-row"><span>Total</span><span>₹${order.total}</span></div>` : ''}
+        ${order.updated_at ? `<div class="track-row"><span>Last update</span><span>${formatDate(order.updated_at)}</span></div>` : ''}
+      </div>
+    </div>`;
+}
+
+async function trackOrder(rawId) {
+  const query = (rawId || '').trim();
+  if (!query) return;
+
+  const box = document.getElementById('trackResult');
+  box.style.display = 'block';
+  box.innerHTML = '<div class="track-loading">🔎 Looking up your order...</div>';
+
+  try {
+    const orders = await fetchOrders();
+    const q = query.toLowerCase().replace(/\s+/g, '');
+    const order = orders.find(o =>
+      String(o.order_id || '').toLowerCase().replace(/\s+/g, '') === q
+    );
+    renderTrackResult(order, query);
+  } catch (err) {
+    box.innerHTML = `<div class="track-miss"><p>Could not load order records. Please try again.</p></div>`;
+  }
+}
 
 document.getElementById('requestForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -570,6 +698,10 @@ function handleBackAction() {
     return true;
   } else if (document.getElementById('checkoutModal').classList.contains('active')) {
     document.getElementById('checkoutModal').classList.remove('active');
+    resetCheckoutPanel();
+    return true;
+  } else if (document.getElementById('trackModal').classList.contains('active')) {
+    document.getElementById('trackModal').classList.remove('active');
     return true;
   } else if (document.getElementById('requestModal').classList.contains('active')) {
     document.getElementById('requestModal').classList.remove('active');
@@ -588,6 +720,36 @@ document.getElementById('closeCartBtn').addEventListener('click', () => {
 document.getElementById('checkoutBtn').addEventListener('click', checkout);
 document.getElementById('cancelBtn').addEventListener('click', () => {
   document.getElementById('checkoutModal').classList.remove('active');
+  resetCheckoutPanel();
+});
+
+/* ---- tracking modal wiring ---- */
+document.getElementById('trackNavLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('trackModal').classList.add('active');
+  document.getElementById('trackInput').focus();
+});
+
+document.getElementById('trackForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  trackOrder(document.getElementById('trackInput').value);
+});
+
+document.getElementById('closeTrackBtn').addEventListener('click', () => {
+  document.getElementById('trackModal').classList.remove('active');
+});
+
+document.getElementById('trackNowBtn').addEventListener('click', () => {
+  document.getElementById('checkoutModal').classList.remove('active');
+  resetCheckoutPanel();
+  document.getElementById('trackModal').classList.add('active');
+  document.getElementById('trackInput').value = lastOrderId;
+  trackOrder(lastOrderId);
+});
+
+document.getElementById('successCloseBtn').addEventListener('click', () => {
+  document.getElementById('checkoutModal').classList.remove('active');
+  resetCheckoutPanel();
 });
 
 document.getElementById('detailBackBtn').addEventListener('click', closeProductDetail);
