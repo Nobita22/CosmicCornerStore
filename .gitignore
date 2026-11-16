@@ -7,6 +7,10 @@ admin.html
 admin.css
 admin.js
 
+# Private order details (customer name/phone/email/address).
+# NEVER commit this — the public orders.json only holds order_id + status.
+orders-details.json
+
 # Python cache
 __pycache__/
 *.pyc

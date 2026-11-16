@@ -3,318 +3,344 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>CosmicCorner - 3D Printed Wonders & Cosmic Jewellery</title>
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="CosmicCorner — handcrafted 3D printed toys, fidgets, decor and cosmic jewellery.">
+  <title>CosmicCorner — 3D Printed Wonders &amp; Cosmic Jewellery</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" href="favicon.ico" sizes="32x32">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="nebula" aria-hidden="true"><span class="blob"></span></div>
-  <div class="stars-bg" id="starsBg"></div>
 
-  <!-- ==================== HEADER ==================== -->
-  <header>
-    <a href="#home" class="logo">✨ Cosmic<span class="gold">Corner</span> ✨</a>
-    <nav>
+<!-- ==================== BOOT / MAINTENANCE GATE ==================== -->
+<div id="bootLoader" class="boot-loader" aria-live="polite">
+  <div class="boot-star">✨</div>
+  <p>Loading CosmicCorner…</p>
+</div>
+
+<div id="maintenanceScreen" class="maintenance" hidden>
+  <div class="maintenance-card">
+    <div class="maintenance-icon">🛠️</div>
+    <h1>We’re making things shine</h1>
+    <p id="maintenanceMessage">The shop is temporarily under maintenance. Please check back soon.</p>
+    <div class="maintenance-actions">
+      <a href="mailto:cosmic.corner.in@gmail.com" class="btn btn-primary">Contact us</a>
+      <button type="button" class="btn btn-ghost" id="maintenanceTrackBtn">📦 Track an order</button>
+    </div>
+    <p class="maintenance-foot">Thank you for your patience ✨</p>
+  </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="app" hidden>
+  <div class="nebula" aria-hidden="true"><span class="blob"></span></div>
+  <div class="stars-bg" id="starsBg" aria-hidden="true"></div>
+
+  <a class="skip-link" href="#shop">Skip to products</a>
+
+  <!-- ---------- header ---------- -->
+  <header class="site-header">
+    <a class="logo" href="#home">✨ Cosmic<span class="gold">Corner</span></a>
+
+    <nav class="main-nav" aria-label="Main">
       <a href="#home">Home</a>
       <a href="#shop">Shop</a>
       <a href="#categories">Categories</a>
-      <a href="#" id="trackNavLink">Track Order</a>
+      <a href="#" data-open-track>Track Order</a>
     </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="trackBtn" type="button" aria-label="Track your order" title="Track order">📦</button>
+      <button class="icon-btn" id="cartBtn" type="button" aria-label="Open cart">
+        🛒<span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button"
+              aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">☰</button>
+    </div>
   </header>
 
-  <!-- ==================== HERO ==================== -->
+  <!-- ---------- mobile drawer ---------- -->
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="drawer" id="mobileMenu" hidden aria-label="Menu">
+    <div class="drawer-head">
+      <span class="logo small">✨ Cosmic<span class="gold">Corner</span></span>
+      <button class="icon-btn" id="menuCloseBtn" type="button" aria-label="Close menu">✕</button>
+    </div>
+    <nav class="drawer-nav">
+      <a href="#home" data-close-drawer>Home</a>
+      <a href="#shop" data-close-drawer>Shop</a>
+      <a href="#categories" data-close-drawer>Categories</a>
+      <a href="#" data-open-track data-close-drawer>📦 Track Order</a>
+    </nav>
+    <div class="drawer-foot">
+      <a class="btn btn-primary" href="#shop" data-close-drawer>Explore Collection →</a>
+    </div>
+  </aside>
+
+  <!-- ---------- hero ---------- -->
   <section class="hero" id="home">
-    <div class="hero-content reveal">
-      <p class="tag">✨ MADE WITH CREATIVITY ✨</p>
-      <h1>Little Things.<br>BIG <span class="gradient">IMAGINATION.</span></h1>
-      <p>Discover amazing 3D printed toys, fidgets, collectibles
-      and unique cosmic jewellery.</p>
+    <div class="hero-copy">
+      <p class="eyebrow">Made with creativity</p>
+      <h1>Little things.<br><span class="gradient">Big imagination.</span></h1>
+      <p class="hero-sub">Handcrafted 3D printed toys, fidgets, collectibles and cosmic jewellery — made layer by layer.</p>
       <div class="hero-cta">
-        <a href="#shop" class="primary-btn">Explore Collection →</a>
-        <a href="#categories" class="ghost-btn">Browse Categories</a>
+        <a href="#shop" class="btn btn-primary">Explore Collection →</a>
+        <button type="button" class="btn btn-ghost" data-open-track>Track an order</button>
       </div>
-      <div class="hero-stats">
-        <div class="stat"><strong id="statProducts">0</strong><span>Products</span></div>
-        <div class="stat"><strong id="statCategories">0</strong><span>Categories</span></div>
-        <div class="stat"><strong>100%</strong><span>Handcrafted</span></div>
-      </div>
+      <dl class="hero-stats">
+        <div><dt>Products</dt><dd id="statProducts">0</dd></div>
+        <div><dt>Categories</dt><dd id="statCategories">0</dd></div>
+        <div><dt>Handcrafted</dt><dd>100%</dd></div>
+      </dl>
     </div>
-    <div class="hero-visual reveal">
-      <span class="hero-float f1">🐉</span>
-      <span class="hero-float f2">💍</span>
-      <span class="hero-float f3">🌀</span>
-      <div class="hero-carousel" id="heroCarousel"></div>
-      <div class="hero-controls">
-        <button class="hero-btn" id="prevBtn">‹</button>
-        <div class="hero-dots" id="heroDots"></div>
-        <button class="hero-btn" id="nextBtn">›</button>
+
+    <div class="hero-media">
+      <div class="carousel" id="heroCarousel"></div>
+      <div class="carousel-controls">
+        <button type="button" class="carousel-btn" id="prevBtn" aria-label="Previous featured product">‹</button>
+        <div class="carousel-dots" id="heroDots"></div>
+        <button type="button" class="carousel-btn" id="nextBtn" aria-label="Next featured product">›</button>
       </div>
     </div>
   </section>
 
-  <!-- ==================== CATEGORIES ==================== -->
-  <section class="categories" id="categories">
-    <div class="container reveal">
-      <h2>Explore Categories</h2>
-      <p class="section-sub">Jump straight to your favourite kind of collectible.</p>
-      <div class="category-grid" id="categoryGrid">
-        <button class="active" data-category="all"><span class="cat-emoji">✨</span> All</button>
-        <button data-category="Toys"><span class="cat-emoji">🧸</span> Toys</button>
-        <button data-category="Fidgets"><span class="cat-emoji">🌀</span> Fidgets</button>
-        <button data-category="Decor"><span class="cat-emoji">🏠</span> Decor</button>
-        <button data-category="Sets"><span class="cat-emoji">🎁</span> Sets</button>
-        <button data-category="Jewellery"><span class="cat-emoji">💍</span> Jewellery</button>
+  <!-- ---------- categories ---------- -->
+  <section class="section" id="categories">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Browse</p>
+        <h2>Explore categories</h2>
       </div>
+    </div>
+    <div class="category-grid" id="categoryGrid">
+      <button type="button" class="category-chip active" data-category="all"><span>✨</span>All</button>
+      <button type="button" class="category-chip" data-category="Toys"><span>🧸</span>Toys</button>
+      <button type="button" class="category-chip" data-category="Fidgets"><span>🌀</span>Fidgets</button>
+      <button type="button" class="category-chip" data-category="Decor"><span>🏠</span>Decor</button>
+      <button type="button" class="category-chip" data-category="Sets"><span>🎁</span>Sets</button>
+      <button type="button" class="category-chip" data-category="Jewellery"><span>💍</span>Jewellery</button>
     </div>
   </section>
 
-  <!-- ==================== SHOP ==================== -->
-  <section class="shop" id="shop">
-    <div class="container">
-      <div class="section-heading reveal">
-        <div>
-          <p class="tag">OUR COLLECTION</p>
-          <h2>Find Your Next Favourite</h2>
-        </div>
-        <input id="search" placeholder="🔍 Search products or tags..." autocomplete="off">
+  <!-- ---------- shop ---------- -->
+  <section class="section" id="shop">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Our collection</p>
+        <h2>Find your next favourite</h2>
       </div>
-
-      <div class="filter-row reveal" id="filterRow">
-        <button class="filter-btn active" data-filter="all">All Products</button>
-        <button class="filter-btn" data-filter="price-low">Price: Low to High</button>
-        <button class="filter-btn" data-filter="price-high">Price: High to Low</button>
-        <button class="filter-btn" data-filter="in-stock">In Stock Only</button>
-        <button class="filter-btn" data-filter="premium">Premium Items</button>
+      <div class="search-wrap">
+        <input id="searchInput" type="search" placeholder="Search products or tags…" aria-label="Search products" autocomplete="off">
       </div>
+    </div>
 
-      <div id="products" class="product-grid"></div>
+    <div class="filter-row" id="filterRow" role="group" aria-label="Filters">
+      <button type="button" class="filter-chip active" data-filter="all">All</button>
+      <button type="button" class="filter-chip" data-filter="in-stock">In stock</button>
+      <button type="button" class="filter-chip" data-filter="premium">Premium</button>
+      <button type="button" class="filter-chip" data-filter="price-low">Price ↑</button>
+      <button type="button" class="filter-chip" data-filter="price-high">Price ↓</button>
+    </div>
 
-      <div id="emptyState" style="display: none; text-align: center; padding: 40px; opacity: 0.6;">
-        <p style="font-size: 18px;">No products found ✨</p>
-      </div>
+    <div class="product-grid" id="products"></div>
+
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-icon">🔍</div>
+      <h3>No products found</h3>
+      <p>Try a different search or category.</p>
+      <button type="button" class="btn btn-ghost" id="clearFiltersBtn">Clear filters</button>
     </div>
   </section>
 
-  <!-- ==================== PRODUCT DETAIL MODAL ==================== -->
-  <div class="product-detail-modal" id="productDetailModal">
-    <div class="detail-container">
-      <div class="detail-header">
-        <button class="detail-back-btn" id="detailBackBtn">←</button>
-        <div class="detail-title" id="detailTitle">Product</div>
-        <div style="width: 40px;"></div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <p class="logo small">✨ Cosmic<span class="gold">Corner</span></p>
+        <p class="muted">Creativity, printed &amp; crafted layer by layer.</p>
       </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#shop">Shop</a>
+        <a href="#categories">Categories</a>
+        <a href="#" data-open-track>Track order</a>
+      </nav>
+      <p class="muted small">© 2026 CosmicCorner. All rights reserved.</p>
+    </div>
+  </footer>
 
-      <div class="detail-content">
+  <button type="button" class="fab-cart" id="floatingCartBtn" aria-label="Open cart">
+    🛒<span class="fab-badge" id="cartBadge" hidden>0</span>
+  </button>
+</div>
+
+<!-- ==================== TOAST ==================== -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ==================== PRODUCT DETAIL ==================== -->
+<div class="modal" id="productDetailModal" hidden>
+  <div class="sheet sheet-lg" role="dialog" aria-modal="true" aria-labelledby="detailName">
+    <header class="sheet-head">
+      <button type="button" class="icon-btn" id="detailBackBtn" aria-label="Back">←</button>
+      <h2 class="sheet-title" id="detailName">Product</h2>
+      <button type="button" class="icon-btn" id="detailCloseBtn" aria-label="Close">✕</button>
+    </header>
+
+    <div class="detail-body">
+      <div class="detail-media">
         <div class="detail-emoji" id="detailEmoji">✨</div>
-        <div class="detail-gallery" id="detailGallery" style="display: none;">
+        <div class="detail-gallery" id="detailGallery" hidden>
           <img class="detail-main-image" id="detailMainImage" src="" alt="">
           <div class="detail-thumbs" id="detailThumbs"></div>
         </div>
-        <div class="detail-name" id="detailName">Product Name</div>
-        <div class="detail-category" id="detailCategory">Jewellery</div>
-        <div class="detail-price" id="detailPrice">₹0</div>
-        <div id="detailStockBadge" class="detail-stock-badge stock-in">In Stock</div>
-
-        <div class="detail-description" id="detailDescription">Premium product description</div>
-        <div class="product-tags" id="detailTags"></div>
-
-        <div class="customization-section" id="customizationSection" style="display: none;">
-          <div class="customization-title">✨ Customization Options</div>
-
-          <div class="form-group-detail">
-            <label class="form-label-detail">Design Type *</label>
-            <select class="form-input-detail" id="designType">
-              <option value="same">Same Design</option>
-              <option value="custom-url">Custom URL/Text</option>
-              <option value="custom-qr">QR Code</option>
-            </select>
-          </div>
-
-          <div class="form-group-detail">
-            <label class="form-label-detail">Design Link/Details</label>
-            <input type="text" class="form-input-detail" id="designLink" placeholder="Enter link or describe custom design">
-          </div>
-
-          <div class="form-group-detail">
-            <label class="form-label-detail">Color *</label>
-            <input type="text" class="form-input-detail" id="customColor" placeholder="e.g., Gold, Silver, Rose Gold">
-          </div>
-
-          <div class="form-group-detail">
-            <label class="form-label-detail">Special Instructions</label>
-            <textarea class="form-input-detail" id="specialInstructions" placeholder="Any special requests..." rows="3"></textarea>
-          </div>
-
-          <div class="extra-charge-info">
-            i Extra Charge: ₹100-150 (will be confirmed after you order)
-          </div>
-        </div>
-
-        <div class="detail-actions" id="detailActions">
-          <div class="detail-qty-control">
-            <button class="detail-qty-btn" id="detailQtyMinus">−</button>
-            <div class="detail-qty-display" id="detailQtyDisplay">1</div>
-            <button class="detail-qty-btn" id="detailQtyPlus">+</button>
-          </div>
-          <button class="detail-add-btn" id="detailAddBtn">Add to Cart</button>
-        </div>
-
-        <button class="btn-submit customize-btn" id="customizeBtn" style="display: none;">✨ Customize This Item</button>
-        <button class="request-btn" id="requestBtn" style="display: none;">🔔 Request When Available</button>
       </div>
-    </div>
-  </div>
 
-  <!-- ==================== CART MODAL ==================== -->
-  <div class="modal" id="cartModal">
-    <div class="modal-content">
-      <div class="cart-title">🛒 Your Cart</div>
-      <div class="cart-items" id="cartItems">
-        <div class="cart-empty">Cart is empty</div>
+      <p class="detail-category" id="detailCategory">Category</p>
+      <p class="detail-price" id="detailPrice">₹0</p>
+      <span class="status-badge" id="detailStockBadge">In Stock</span>
+      <p class="detail-description" id="detailDescription"></p>
+      <div class="tag-list" id="detailTags"></div>
+
+      <div class="customize-block" id="customizationSection" hidden>
+        <h3>Customisation</h3>
+        <label class="field">
+          <span>Design type</span>
+          <select id="designType">
+            <option value="same">Same design</option>
+            <option value="custom-url">Custom URL / text</option>
+            <option value="custom-qr">QR code</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Design link / details</span>
+          <input type="text" id="designLink" placeholder="Link or describe your design">
+        </label>
+        <label class="field">
+          <span>Colour</span>
+          <input type="text" id="customColor" placeholder="e.g. Gold, Silver, Rose Gold">
+        </label>
+        <label class="field">
+          <span>Special instructions</span>
+          <textarea id="specialInstructions" rows="2" placeholder="Anything we should know?"></textarea>
+        </label>
+        <p class="hint">i Extra charge ₹100–150 — confirmed after you order.</p>
       </div>
-      <div class="cart-summary" id="cartSummary" style="display: none;">
-        <div class="summary-row">
-          <span>Total Items:</span>
-          <span id="totalItems">0</span>
+
+      <div class="detail-actions" id="detailActions">
+        <div class="stepper">
+          <button type="button" class="stepper-btn" id="detailQtyMinus" aria-label="Decrease quantity">−</button>
+          <span class="stepper-value" id="detailQtyDisplay">1</span>
+          <button type="button" class="stepper-btn" id="detailQtyPlus" aria-label="Increase quantity">+</button>
         </div>
-        <div class="summary-row total">
-          <span>Total Price:</span>
-          <span id="totalPrice">₹0</span>
-        </div>
+        <button type="button" class="btn btn-primary" id="detailAddBtn">Add to Cart</button>
       </div>
-      <button class="btn-checkout" id="checkoutBtn" disabled>Proceed to Checkout</button>
-      <button class="btn-cancel" id="closeCartBtn">Continue Shopping</button>
+
+      <button type="button" class="btn btn-ghost" id="customizeBtn" hidden>✨ Customise this item</button>
+      <button type="button" class="btn btn-danger" id="requestBtn" hidden>🔔 Request when available</button>
     </div>
   </div>
+</div>
 
-  <!-- ==================== CHECKOUT MODAL ==================== -->
-  <div class="modal" id="checkoutModal">
-    <div class="modal-content">
-      <div class="modal-title">📍 Shipping Details</div>
+<!-- ==================== CART ==================== -->
+<div class="modal" id="cartModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <header class="sheet-head">
+      <h2 class="sheet-title" id="cartTitle">🛒 Your cart</h2>
+      <button type="button" class="icon-btn" id="closeCartBtn" aria-label="Close cart">✕</button>
+    </header>
 
-      <form id="checkoutForm">
-        <div class="form-group">
-          <label class="form-label">Full Name *</label>
-          <input type="text" class="form-input" id="fullName" required>
-        </div>
+    <div class="cart-items" id="cartItems"></div>
 
-        <div class="form-group">
-          <label class="form-label">Phone Number *</label>
-          <input type="tel" class="form-input" id="phone" required>
-        </div>
+    <div class="cart-summary" id="cartSummary" hidden>
+      <div class="summary-row"><span>Items</span><span id="totalItems">0</span></div>
+      <div class="summary-row total"><span>Total</span><span id="totalPrice">₹0</span></div>
+    </div>
 
-        <div class="form-group">
-          <label class="form-label">Email *</label>
-          <input type="email" class="form-input" id="email" required>
-        </div>
+    <button type="button" class="btn btn-primary btn-block" id="checkoutBtn" disabled>Proceed to checkout</button>
+    <button type="button" class="btn btn-ghost btn-block" id="continueShoppingBtn">Continue shopping</button>
+  </div>
+</div>
 
-        <div class="form-group">
-          <label class="form-label">Address *</label>
-          <input type="text" class="form-input" id="address" required>
-        </div>
+<!-- ==================== CHECKOUT ==================== -->
+<div class="modal" id="checkoutModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <header class="sheet-head">
+      <h2 class="sheet-title" id="checkoutTitle">📍 Delivery details</h2>
+      <button type="button" class="icon-btn" id="checkoutCloseBtn" aria-label="Close">✕</button>
+    </header>
 
-        <div class="form-group">
-          <label class="form-label">City *</label>
-          <input type="text" class="form-input" id="city" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Postal Code *</label>
-          <input type="text" class="form-input" id="postalCode" required>
-        </div>
-
-        <button type="submit" class="btn-submit">Place Order →</button>
-        <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
-      </form>
-
-      <!-- shown after a successful order -->
-      <div id="orderSuccess" class="order-success" style="display: none;">
-        <div class="order-success-icon">🎉</div>
-        <h3>Order placed!</h3>
-        <p class="order-success-label">Your order number</p>
-        <div class="order-id-box" id="orderIdBox">CC-000000-0000</div>
-        <p class="order-success-hint">Save this ID — you can track your order any time with it.</p>
-        <button type="button" class="btn-submit" id="trackNowBtn">📦 Track This Order</button>
-        <button type="button" class="btn-cancel" id="successCloseBtn">Continue Shopping</button>
+    <form id="checkoutForm" novalidate>
+      <label class="field"><span>Full name *</span><input type="text" id="fullName" required autocomplete="name"></label>
+      <label class="field"><span>Phone number *</span><input type="tel" id="phone" required autocomplete="tel" inputmode="tel"></label>
+      <label class="field"><span>Email *</span><input type="email" id="email" required autocomplete="email"></label>
+      <label class="field"><span>Address *</span><input type="text" id="address" required autocomplete="street-address"></label>
+      <div class="field-row">
+        <label class="field"><span>City *</span><input type="text" id="city" required autocomplete="address-level2"></label>
+        <label class="field"><span>PIN code *</span><input type="text" id="postalCode" required inputmode="numeric" autocomplete="postal-code"></label>
       </div>
+      <p class="form-error" id="checkoutError" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary btn-block" id="placeOrderBtn">Place order →</button>
+      <button type="button" class="btn btn-ghost btn-block" id="cancelBtn">Cancel</button>
+    </form>
+
+    <div class="order-success" id="orderSuccess" hidden>
+      <div class="success-icon">🎉</div>
+      <h3>Order placed!</h3>
+      <p class="muted">Your order number</p>
+      <p class="order-id" id="orderIdBox">—</p>
+      <p class="hint">Keep this ID — use <strong>Track Order</strong> any time to check the status.</p>
+      <button type="button" class="btn btn-primary btn-block" id="trackNowBtn">📦 Track this order</button>
+      <button type="button" class="btn btn-ghost btn-block" id="successCloseBtn">Continue shopping</button>
     </div>
   </div>
+</div>
 
-  <!-- ==================== TRACK ORDER MODAL ==================== -->
-  <div class="modal" id="trackModal">
-    <div class="modal-content">
-      <div class="modal-title">📦 Track Your Order</div>
+<!-- ==================== TRACK (outside #app so it works in maintenance) ==================== -->
+<div class="modal" id="trackModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="trackTitle">
+    <header class="sheet-head">
+      <h2 class="sheet-title" id="trackTitle">📦 Track your order</h2>
+      <button type="button" class="icon-btn" id="closeTrackBtn" aria-label="Close">✕</button>
+    </header>
 
-      <form id="trackForm">
-        <div class="form-group">
-          <label class="form-label">Order ID *</label>
-          <input class="form-input" id="trackInput" placeholder="e.g. CC-261113-7F3K"
-                 autocomplete="off" required>
-        </div>
-        <button type="submit" class="btn-submit">Track Order</button>
-        <button type="button" class="btn-cancel" id="closeTrackBtn">Close</button>
-      </form>
+    <form id="trackForm">
+      <label class="field">
+        <span>Order ID *</span>
+        <input type="text" id="trackInput" placeholder="e.g. CC-261113-7F3K" required
+               autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </label>
+      <p class="form-error" id="trackError" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary btn-block" id="trackSubmitBtn">Track order</button>
+    </form>
 
-      <div id="trackResult" style="display: none;"></div>
-    </div>
+    <div id="trackResult" hidden></div>
   </div>
+</div>
 
-  <!-- ==================== REQUEST MODAL ==================== -->
-  <div class="request-modal" id="requestModal">
-    <div class="request-modal-content">
-      <div class="request-modal-title">📝 Request Product</div>
+<!-- ==================== REQUEST PRODUCT ==================== -->
+<div class="modal" id="requestModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="requestTitle">
+    <header class="sheet-head">
+      <h2 class="sheet-title" id="requestTitle">📝 Request product</h2>
+      <button type="button" class="icon-btn" id="closeRequestBtn" aria-label="Close">✕</button>
+    </header>
 
-      <form id="requestForm">
-        <div class="form-group">
-          <label class="form-label">Product Name *</label>
-          <input type="text" class="form-input" id="requestProductName" readonly>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Your Name *</label>
-          <input type="text" class="form-input" id="requestName" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Phone Number *</label>
-          <input type="tel" class="form-input" id="requestPhone" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Email *</label>
-          <input type="email" class="form-input" id="requestEmail" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Additional Details</label>
-          <textarea class="request-details" id="requestDetails" placeholder="Tell us more..."></textarea>
-        </div>
-
-        <button type="submit" class="btn-submit">Send Request</button>
-        <button type="button" class="btn-cancel" id="closeRequestBtn">Cancel</button>
-      </form>
-    </div>
+    <form id="requestForm">
+      <label class="field"><span>Product</span><input type="text" id="requestProductName" readonly></label>
+      <label class="field"><span>Your name *</span><input type="text" id="requestName" required autocomplete="name"></label>
+      <label class="field"><span>Phone *</span><input type="tel" id="requestPhone" required autocomplete="tel" inputmode="tel"></label>
+      <label class="field"><span>Email *</span><input type="email" id="requestEmail" required autocomplete="email"></label>
+      <label class="field"><span>Anything else?</span><textarea id="requestDetails" rows="2"></textarea></label>
+      <p class="form-error" id="requestError" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary btn-block">Send request</button>
+      <button type="button" class="btn btn-ghost btn-block" id="cancelRequestBtn">Cancel</button>
+    </form>
   </div>
+</div>
 
-  <!-- ==================== FLOATING CART ==================== -->
-  <button class="floating-cart-btn" id="floatingCartBtn" title="View Cart">
-    🛒
-    <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
-  </button>
-
-  <!-- ==================== FOOTER ==================== -->
-  <footer>
-    <h2>✨ CosmicCorner ✨</h2>
-    <p>Creativity, printed &amp; crafted layer by layer.</p>
-    <p>© 2026 CosmicCorner. All rights reserved. ✨</p>
-  </footer>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(function () {});
-    }
-  </script>
-  <script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  }
+</script>
+<script src="script.js"></script>
 </body>
 </html>
