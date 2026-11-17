@@ -14,5 +14,15 @@
     "updated_at": "2026-11-17T04:20:00",
     "item_count": 2,
     "total": 598
+  },
+  {
+    "order_id": "CC-261117-CFBF",
+    "status": "pending",
+    "placed_at": "2026-11-17T01:16:17.010Z",
+    "updated_at": "2026-11-17T01:16:17.010Z",
+    "customer_name": "Diag",
+    "item_count": 1,
+    "total": 1,
+    "items_summary": "Diag Item x 1 = ₹1.00"
   }
 ]
