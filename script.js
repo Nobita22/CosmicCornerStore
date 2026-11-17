@@ -721,22 +721,35 @@ async function placeOrder(e) {
     return;
   }
 
-  const orderId = generateOrderId();
+  const localId = generateOrderId();
   const button = $("placeOrderBtn");
   const original = button.textContent;
   button.disabled = true;
-  button.textContent = "Placing order…";
+  button.textContent = "Placing order... please wait";
+
+  $("copyOrderBtn").hidden = true;
+  showError("checkoutError", "");
+
+  // A stalled connection must never leave the button spinning forever.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 25000);
 
   try {
     const res = await fetch(ORDER_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: orderId, customer, items, total: totalOf(items) }),
+      body: JSON.stringify({ order_id: localId, customer, items, total: totalOf(items) }),
+      signal: controller.signal,
     });
     if (!res.ok) {
       const detail = await res.json().catch(() => ({}));
       throw new Error(detail.error || `Order service responded ${res.status}`);
     }
+
+    const data = await res.json().catch(() => ({}));
+    // The worker is the source of truth: it may issue its own order ID.
+    // Using the returned ID keeps Track Order in sync with orders.json.
+    const orderId = data.order_id || localId;
 
     state.lastOrderId = orderId;
     state.cart = {};
@@ -745,19 +758,52 @@ async function placeOrder(e) {
     $("checkoutForm").hidden = true;
     $("orderIdBox").textContent = orderId;
     $("orderSuccess").hidden = false;
-    toast("Order placed — " + orderId, "📨");
+    toast("Order placed - " + orderId, "📨");
   } catch (err) {
+    const timedOut = err.name === "AbortError";
     showError(
       "checkoutError",
-      `Could not place the order: ${err.message}. ` +
-        (location.hostname !== "www.cosmiccorner.in"
-          ? "Note: orders only go through on https://www.cosmiccorner.in."
-          : "Please try again.")
+      timedOut
+        ? "The order service took too long to respond. Your cart is still saved - try again, or copy your order details below."
+        : `Could not place the order (${err.message}). Your cart is still saved.` +
+            (location.hostname !== "www.cosmiccorner.in"
+              ? " Note: orders only go through on https://www.cosmiccorner.in."
+              : "")
     );
+    offerOrderCopy(localId, customer, items);
   } finally {
+    clearTimeout(timer);
     button.disabled = false;
     button.textContent = original;
   }
+}
+
+/* If an order cannot be sent, let the customer keep a copy of it. */
+function offerOrderCopy(orderId, customer, items) {
+  const btn = $("copyOrderBtn");
+  if (!btn) return;
+
+  const lines = [
+    `CosmicCorner order ${orderId}`,
+    `Name: ${customer.name}`,
+    `Phone: ${customer.phone}`,
+    `Email: ${customer.email}`,
+    `Address: ${customer.address}`,
+    "",
+    ...items.map((i) => `${i.name} x ${i.quantity} = \u20B9${i.price * i.quantity}`),
+    "",
+    `Total: \u20B9${totalOf(items)}`,
+  ];
+
+  btn.hidden = false;
+  btn.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(lines.join("\n"));
+      toast("Order details copied - send them to us", "📋");
+    } catch (_) {
+      showError("checkoutError", lines.join(" \u00B7 "));
+    }
+  };
 }
 
 function resetCheckout() {
