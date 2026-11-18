@@ -22,5 +22,13 @@
     "updated_at": "2026-11-17T03:42:16.904Z",
     "item_count": 2,
     "total": 748
+  },
+  {
+    "order_id": "CC-261118-M8A9",
+    "status": "pending",
+    "placed_at": "2026-11-18T04:40:22.395Z",
+    "updated_at": "2026-11-18T04:40:22.395Z",
+    "item_count": 2,
+    "total": 528
   }
 ]
