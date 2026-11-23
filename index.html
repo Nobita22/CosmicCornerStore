@@ -3,56 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#050505">
-  <meta name="description" content="CosmicCorner — handcrafted 3D printed toys, fidgets, decor and cosmic jewellery.">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="CosmicCorner — 3D printed toys, fidgets, decor and cosmic jewellery, printed layer by layer in our studio.">
   <title>CosmicCorner — 3D Printed Wonders &amp; Cosmic Jewellery</title>
+  <link rel="canonical" href="https://www.cosmiccorner.in/">
+  <!-- Link previews on WhatsApp / Instagram / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CosmicCorner">
+  <meta property="og:title" content="CosmicCorner — 3D Printed Wonders &amp; Cosmic Jewellery">
+  <meta property="og:description" content="3D printed toys, fidgets, decor and cosmic jewellery. Order online, track your order anytime.">
+  <meta property="og:url" content="https://www.cosmiccorner.in/">
+  <meta name="twitter:card" content="summary">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Unbounded:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- Shared infinity mark: a strand of filament (gold → lilac silk) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="silk" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E9C46A"/>
+      <stop offset=".5" stop-color="#F3E3C0"/>
+      <stop offset="1" stop-color="#B79CFF"/>
+    </linearGradient>
+    <symbol id="inf" viewBox="0 0 200 100">
+      <path d="M100 50C80 18 26 18 26 50s54 32 74 0 74-32 74 0-54 32-74 0Z" fill="none" stroke="url(#silk)" stroke-width="11" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
 <!-- ==================== BOOT / MAINTENANCE GATE ==================== -->
 <div id="bootLoader" class="boot-loader" aria-live="polite">
-  <div class="boot-star">✨</div>
-  <p>Loading CosmicCorner…</p>
+  <svg class="boot-inf" viewBox="0 0 200 100" aria-hidden="true">
+    <path pathLength="1" d="M100 50C80 18 26 18 26 50s54 32 74 0 74-32 74 0-54 32-74 0Z"/>
+  </svg>
+  <p>Warming up the printer…</p>
 </div>
 
 <div id="maintenanceScreen" class="maintenance" hidden>
   <div class="maintenance-card">
-    <div class="maintenance-icon">🛠️</div>
-    <h1>We’re making things shine</h1>
+    <svg class="maintenance-mark" aria-hidden="true"><use href="#inf"/></svg>
+    <h1>The printer is busy</h1>
     <p id="maintenanceMessage">The shop is temporarily under maintenance. Please check back soon.</p>
     <div class="maintenance-actions">
-      <a href="mailto:cosmic.corner.in@gmail.com" class="btn btn-primary">Contact us</a>
-      <button type="button" class="btn btn-ghost" id="maintenanceTrackBtn">📦 Track an order</button>
+      <a href="mailto:cosmic.corner.in@gmail.com" class="btn btn-primary">Email us</a>
+      <button type="button" class="btn btn-ghost" id="maintenanceTrackBtn">Track an order</button>
     </div>
-    <p class="maintenance-foot">Thank you for your patience ✨</p>
   </div>
 </div>
 
 <!-- ==================== APP ==================== -->
 <div id="app" hidden>
-  <div class="nebula" aria-hidden="true"><span class="blob"></span></div>
   <div class="stars-bg" id="starsBg" aria-hidden="true"></div>
 
   <a class="skip-link" href="#shop">Skip to products</a>
 
   <!-- ---------- header ---------- -->
   <header class="site-header">
-    <a class="logo" href="#home">✨ Cosmic<span class="gold">Corner</span></a>
+    <a class="logo" href="#home" aria-label="CosmicCorner home">
+      Cosmic<svg class="logo-inf" aria-hidden="true"><use href="#inf"/></svg>Corner
+    </a>
 
     <nav class="main-nav" aria-label="Main">
-      <a href="#home">Home</a>
       <a href="#shop">Shop</a>
       <a href="#categories">Categories</a>
-      <a href="#" data-open-track>Track Order</a>
+      <a href="#" data-open-track>Track order</a>
     </nav>
 
     <div class="header-actions">
       <button class="icon-btn" id="trackBtn" type="button" aria-label="Track your order" title="Track order">📦</button>
-      <button class="icon-btn" id="cartBtn" type="button" aria-label="Open cart">
-        🛒<span class="cart-count" id="cartCount">0</span>
+      <button class="icon-btn cart-btn" id="cartBtn" type="button" aria-label="Open cart">
+        Cart <span class="cart-count zero" id="cartCount">0</span>
       </button>
       <button class="icon-btn menu-btn" id="menuBtn" type="button"
               aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">☰</button>
@@ -63,55 +89,57 @@
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
   <aside class="drawer" id="mobileMenu" hidden aria-label="Menu">
     <div class="drawer-head">
-      <span class="logo small">✨ Cosmic<span class="gold">Corner</span></span>
+      <span class="logo small">Cosmic<svg class="logo-inf" aria-hidden="true"><use href="#inf"/></svg>Corner</span>
       <button class="icon-btn" id="menuCloseBtn" type="button" aria-label="Close menu">✕</button>
     </div>
     <nav class="drawer-nav">
       <a href="#home" data-close-drawer>Home</a>
       <a href="#shop" data-close-drawer>Shop</a>
       <a href="#categories" data-close-drawer>Categories</a>
-      <a href="#" data-open-track data-close-drawer>📦 Track Order</a>
+      <a href="#" data-open-track data-close-drawer>Track order</a>
     </nav>
-    <div class="drawer-foot">
-      <a class="btn btn-primary" href="#shop" data-close-drawer>Explore Collection →</a>
-    </div>
   </aside>
 
+  <main>
   <!-- ---------- hero ---------- -->
   <section class="hero" id="home">
     <div class="hero-copy">
-      <p class="eyebrow">Made with creativity</p>
-      <h1>Little things.<br><span class="gradient">Big imagination.</span></h1>
-      <p class="hero-sub">Handcrafted 3D printed toys, fidgets, collectibles and cosmic jewellery — made layer by layer.</p>
+      <h1>Endless little worlds, printed layer by layer.</h1>
+      <p class="hero-sub">3D printed toys, fidgets, decor and cosmic jewellery — designed, printed and finished by hand in our studio.</p>
       <div class="hero-cta">
-        <a href="#shop" class="btn btn-primary">Explore Collection →</a>
+        <a href="#shop" class="btn btn-primary">Browse the shop</a>
         <button type="button" class="btn btn-ghost" data-open-track>Track an order</button>
       </div>
       <dl class="hero-stats">
-        <div><dt>Products</dt><dd id="statProducts">0</dd></div>
-        <div><dt>Categories</dt><dd id="statCategories">0</dd></div>
-        <div><dt>Handcrafted</dt><dd>100%</dd></div>
+        <div><dd id="statProducts">0</dd><dt>pieces</dt></div>
+        <div><dd id="statCategories">0</dd><dt>categories</dt></div>
+        <div><dd>∞</dd><dt>layers of care</dt></div>
       </dl>
     </div>
 
     <div class="hero-media">
-      <div class="carousel" id="heroCarousel"></div>
-      <div class="carousel-controls">
-        <button type="button" class="carousel-btn" id="prevBtn" aria-label="Previous featured product">‹</button>
-        <div class="carousel-dots" id="heroDots"></div>
-        <button type="button" class="carousel-btn" id="nextBtn" aria-label="Next featured product">›</button>
+      <!-- The signature moment: the loop prints itself, then the nozzle keeps tracing it -->
+      <svg class="hero-inf" viewBox="0 0 200 100" aria-hidden="true">
+        <path class="hero-inf-glow" d="M100 50C80 18 26 18 26 50s54 32 74 0 74-32 74 0-54 32-74 0Z"/>
+        <path id="loopPath" class="hero-inf-line" pathLength="1" d="M100 50C80 18 26 18 26 50s54 32 74 0 74-32 74 0-54 32-74 0Z"/>
+        <circle class="nozzle" r="2.6">
+          <animateMotion dur="14s" begin="1.8s" repeatCount="indefinite" rotate="auto"><mpath href="#loopPath"/></animateMotion>
+        </circle>
+      </svg>
+      <div class="hero-feature">
+        <div class="carousel" id="heroCarousel"></div>
+        <div class="carousel-controls">
+          <button type="button" class="carousel-btn" id="prevBtn" aria-label="Previous featured product">‹</button>
+          <div class="carousel-dots" id="heroDots"></div>
+          <button type="button" class="carousel-btn" id="nextBtn" aria-label="Next featured product">›</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ---------- categories ---------- -->
-  <section class="section" id="categories">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">Browse</p>
-        <h2>Explore categories</h2>
-      </div>
-    </div>
+  <section class="section" id="categories" aria-labelledby="catTitle">
+    <h2 id="catTitle">Categories</h2>
     <div class="category-grid" id="categoryGrid">
       <button type="button" class="category-chip active" data-category="all"><span>✨</span>All</button>
       <button type="button" class="category-chip" data-category="Toys"><span>🧸</span>Toys</button>
@@ -123,14 +151,11 @@
   </section>
 
   <!-- ---------- shop ---------- -->
-  <section class="section" id="shop">
+  <section class="section" id="shop" aria-labelledby="shopTitle">
     <div class="section-head">
-      <div>
-        <p class="eyebrow">Our collection</p>
-        <h2>Find your next favourite</h2>
-      </div>
+      <h2 id="shopTitle">The collection</h2>
       <div class="search-wrap">
-        <input id="searchInput" type="search" placeholder="Search products or tags…" aria-label="Search products" autocomplete="off">
+        <input id="searchInput" type="search" placeholder="Search products or tags" aria-label="Search products" autocomplete="off">
       </div>
     </div>
 
@@ -138,32 +163,34 @@
       <button type="button" class="filter-chip active" data-filter="all">All</button>
       <button type="button" class="filter-chip" data-filter="in-stock">In stock</button>
       <button type="button" class="filter-chip" data-filter="premium">Premium</button>
-      <button type="button" class="filter-chip" data-filter="price-low">Price ↑</button>
-      <button type="button" class="filter-chip" data-filter="price-high">Price ↓</button>
+      <button type="button" class="filter-chip" data-filter="price-low">Price: low to high</button>
+      <button type="button" class="filter-chip" data-filter="price-high">Price: high to low</button>
     </div>
 
     <div class="product-grid" id="products"></div>
 
     <div class="empty-state" id="emptyState" hidden>
-      <div class="empty-icon">🔍</div>
-      <h3>No products found</h3>
-      <p>Try a different search or category.</p>
+      <div class="empty-icon">🔭</div>
+      <h3>Nothing in this corner of space</h3>
+      <p>Try another search or category.</p>
       <button type="button" class="btn btn-ghost" id="clearFiltersBtn">Clear filters</button>
     </div>
   </section>
+  </main>
 
   <footer class="site-footer">
     <div class="footer-inner">
       <div>
-        <p class="logo small">✨ Cosmic<span class="gold">Corner</span></p>
-        <p class="muted">Creativity, printed &amp; crafted layer by layer.</p>
+        <p class="logo small">Cosmic<svg class="logo-inf" aria-hidden="true"><use href="#inf"/></svg>Corner</p>
+        <p class="muted">Printed and finished by hand, layer by layer.</p>
       </div>
       <nav class="footer-links" aria-label="Footer">
         <a href="#shop">Shop</a>
         <a href="#categories">Categories</a>
         <a href="#" data-open-track>Track order</a>
+        <a href="mailto:cosmic.corner.in@gmail.com">Email us</a>
       </nav>
-      <p class="muted small">© 2026 CosmicCorner. All rights reserved.</p>
+      <p class="muted small">© 2026 CosmicCorner</p>
     </div>
   </footer>
 
@@ -193,48 +220,52 @@
         </div>
       </div>
 
-      <p class="detail-category" id="detailCategory">Category</p>
-      <p class="detail-price" id="detailPrice">₹0</p>
-      <span class="status-badge" id="detailStockBadge">In Stock</span>
-      <p class="detail-description" id="detailDescription"></p>
-      <div class="tag-list" id="detailTags"></div>
-
-      <div class="customize-block" id="customizationSection" hidden>
-        <h3>Customisation</h3>
-        <label class="field">
-          <span>Design type</span>
-          <select id="designType">
-            <option value="same">Same design</option>
-            <option value="custom-url">Custom URL / text</option>
-            <option value="custom-qr">QR code</option>
-          </select>
-        </label>
-        <label class="field">
-          <span>Design link / details</span>
-          <input type="text" id="designLink" placeholder="Link or describe your design">
-        </label>
-        <label class="field">
-          <span>Colour</span>
-          <input type="text" id="customColor" placeholder="e.g. Gold, Silver, Rose Gold">
-        </label>
-        <label class="field">
-          <span>Special instructions</span>
-          <textarea id="specialInstructions" rows="2" placeholder="Anything we should know?"></textarea>
-        </label>
-        <p class="hint">i Extra charge ₹100–150 — confirmed after you order.</p>
-      </div>
-
-      <div class="detail-actions" id="detailActions">
-        <div class="stepper">
-          <button type="button" class="stepper-btn" id="detailQtyMinus" aria-label="Decrease quantity">−</button>
-          <span class="stepper-value" id="detailQtyDisplay">1</span>
-          <button type="button" class="stepper-btn" id="detailQtyPlus" aria-label="Increase quantity">+</button>
+      <div class="detail-info">
+        <p class="detail-category" id="detailCategory">Category</p>
+        <div class="detail-price-row">
+          <p class="detail-price" id="detailPrice">₹0</p>
+          <span class="status-badge" id="detailStockBadge">In stock</span>
         </div>
-        <button type="button" class="btn btn-primary" id="detailAddBtn">Add to Cart</button>
-      </div>
+        <p class="detail-description" id="detailDescription"></p>
+        <div class="tag-list" id="detailTags"></div>
 
-      <button type="button" class="btn btn-ghost" id="customizeBtn" hidden>✨ Customise this item</button>
-      <button type="button" class="btn btn-danger" id="requestBtn" hidden>🔔 Request when available</button>
+        <div class="customize-block" id="customizationSection" hidden>
+          <h3>Make it yours</h3>
+          <label class="field">
+            <span>Design</span>
+            <select id="designType">
+              <option value="same">Same as shown</option>
+              <option value="custom-url">Custom text or link</option>
+              <option value="custom-qr">QR code</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Design link or details</span>
+            <input type="text" id="designLink" placeholder="Paste a link or describe your design">
+          </label>
+          <label class="field">
+            <span>Colour</span>
+            <input type="text" id="customColor" placeholder="e.g. gold, silver, rose gold">
+          </label>
+          <label class="field">
+            <span>Special instructions</span>
+            <textarea id="specialInstructions" rows="2" placeholder="Anything we should know?"></textarea>
+          </label>
+          <p class="hint">Customisation costs ₹100–150 extra. We confirm the price with you after you order.</p>
+        </div>
+
+        <div class="detail-actions" id="detailActions">
+          <div class="stepper">
+            <button type="button" class="stepper-btn" id="detailQtyMinus" aria-label="Decrease quantity">−</button>
+            <span class="stepper-value" id="detailQtyDisplay">1</span>
+            <button type="button" class="stepper-btn" id="detailQtyPlus" aria-label="Increase quantity">+</button>
+          </div>
+          <button type="button" class="btn btn-primary" id="detailAddBtn">Add to cart</button>
+        </div>
+
+        <button type="button" class="btn btn-ghost btn-block" id="customizeBtn" hidden>✨ Customise this item</button>
+        <button type="button" class="btn btn-ghost btn-block" id="requestBtn" hidden>🔔 Tell me when it's back</button>
+      </div>
     </div>
   </div>
 </div>
@@ -243,7 +274,7 @@
 <div class="modal" id="cartModal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
     <header class="sheet-head">
-      <h2 class="sheet-title" id="cartTitle">🛒 Your cart</h2>
+      <h2 class="sheet-title" id="cartTitle">Your cart</h2>
       <button type="button" class="icon-btn" id="closeCartBtn" aria-label="Close cart">✕</button>
     </header>
 
@@ -254,8 +285,8 @@
       <div class="summary-row total"><span>Total</span><span id="totalPrice">₹0</span></div>
     </div>
 
-    <button type="button" class="btn btn-primary btn-block" id="checkoutBtn" disabled>Proceed to checkout</button>
-    <button type="button" class="btn btn-ghost btn-block" id="continueShoppingBtn">Continue shopping</button>
+    <button type="button" class="btn btn-primary btn-block" id="checkoutBtn" disabled>Checkout</button>
+    <button type="button" class="btn btn-ghost btn-block" id="continueShoppingBtn">Keep shopping</button>
   </div>
 </div>
 
@@ -263,33 +294,34 @@
 <div class="modal" id="checkoutModal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
     <header class="sheet-head">
-      <h2 class="sheet-title" id="checkoutTitle">📍 Delivery details</h2>
+      <h2 class="sheet-title" id="checkoutTitle">Delivery details</h2>
       <button type="button" class="icon-btn" id="checkoutCloseBtn" aria-label="Close">✕</button>
     </header>
 
     <form id="checkoutForm" novalidate>
-      <label class="field"><span>Full name *</span><input type="text" id="fullName" required autocomplete="name"></label>
-      <label class="field"><span>Phone number *</span><input type="tel" id="phone" required autocomplete="tel" inputmode="tel"></label>
-      <label class="field"><span>Email *</span><input type="email" id="email" required autocomplete="email"></label>
-      <label class="field"><span>Address *</span><input type="text" id="address" required autocomplete="street-address"></label>
+      <label class="field"><span>Full name</span><input type="text" id="fullName" required autocomplete="name"></label>
+      <label class="field"><span>Phone number</span><input type="tel" id="phone" required autocomplete="tel" inputmode="tel"></label>
+      <label class="field"><span>Email</span><input type="email" id="email" required autocomplete="email"></label>
+      <label class="field"><span>Address</span><input type="text" id="address" required autocomplete="street-address"></label>
       <div class="field-row">
-        <label class="field"><span>City *</span><input type="text" id="city" required autocomplete="address-level2"></label>
-        <label class="field"><span>PIN code *</span><input type="text" id="postalCode" required inputmode="numeric" autocomplete="postal-code"></label>
+        <label class="field"><span>City</span><input type="text" id="city" required autocomplete="address-level2"></label>
+        <label class="field"><span>PIN code</span><input type="text" id="postalCode" required inputmode="numeric" autocomplete="postal-code"></label>
       </div>
+      <p class="hint">All fields are required. We'll message you on WhatsApp to confirm your order.</p>
       <p class="form-error" id="checkoutError" role="alert" hidden></p>
       <button type="button" class="btn btn-ghost btn-block" id="copyOrderBtn" hidden>📋 Copy order details</button>
-      <button type="submit" class="btn btn-primary btn-block" id="placeOrderBtn">Place order →</button>
+      <button type="submit" class="btn btn-primary btn-block" id="placeOrderBtn">Place order</button>
       <button type="button" class="btn btn-ghost btn-block" id="cancelBtn">Cancel</button>
     </form>
 
     <div class="order-success" id="orderSuccess" hidden>
-      <div class="success-icon">🎉</div>
-      <h3>Order placed!</h3>
+      <svg class="success-mark" aria-hidden="true"><use href="#inf"/></svg>
+      <h3>Order placed</h3>
       <p class="muted">Your order number</p>
       <p class="order-id" id="orderIdBox">—</p>
-      <p class="hint">Keep this ID — use <strong>Track Order</strong> any time to check the status.</p>
-      <button type="button" class="btn btn-primary btn-block" id="trackNowBtn">📦 Track this order</button>
-      <button type="button" class="btn btn-ghost btn-block" id="successCloseBtn">Continue shopping</button>
+      <p class="hint">Save this number. Use Track order any time to see where your order is.</p>
+      <button type="button" class="btn btn-primary btn-block" id="trackNowBtn">Track this order</button>
+      <button type="button" class="btn btn-ghost btn-block" id="successCloseBtn">Keep shopping</button>
     </div>
   </div>
 </div>
@@ -298,13 +330,13 @@
 <div class="modal" id="trackModal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="trackTitle">
     <header class="sheet-head">
-      <h2 class="sheet-title" id="trackTitle">📦 Track your order</h2>
+      <h2 class="sheet-title" id="trackTitle">Track your order</h2>
       <button type="button" class="icon-btn" id="closeTrackBtn" aria-label="Close">✕</button>
     </header>
 
     <form id="trackForm">
       <label class="field">
-        <span>Order ID *</span>
+        <span>Order number</span>
         <input type="text" id="trackInput" placeholder="e.g. CC-261113-7F3K" required
                autocomplete="off" autocapitalize="characters" spellcheck="false">
       </label>
@@ -320,16 +352,16 @@
 <div class="modal" id="requestModal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="requestTitle">
     <header class="sheet-head">
-      <h2 class="sheet-title" id="requestTitle">📝 Request product</h2>
+      <h2 class="sheet-title" id="requestTitle">Tell me when it's back</h2>
       <button type="button" class="icon-btn" id="closeRequestBtn" aria-label="Close">✕</button>
     </header>
 
     <form id="requestForm">
       <label class="field"><span>Product</span><input type="text" id="requestProductName" readonly></label>
-      <label class="field"><span>Your name *</span><input type="text" id="requestName" required autocomplete="name"></label>
-      <label class="field"><span>Phone *</span><input type="tel" id="requestPhone" required autocomplete="tel" inputmode="tel"></label>
-      <label class="field"><span>Email *</span><input type="email" id="requestEmail" required autocomplete="email"></label>
-      <label class="field"><span>Anything else?</span><textarea id="requestDetails" rows="2"></textarea></label>
+      <label class="field"><span>Your name</span><input type="text" id="requestName" required autocomplete="name"></label>
+      <label class="field"><span>Phone</span><input type="tel" id="requestPhone" required autocomplete="tel" inputmode="tel"></label>
+      <label class="field"><span>Email</span><input type="email" id="requestEmail" required autocomplete="email"></label>
+      <label class="field"><span>Anything else? (optional)</span><textarea id="requestDetails" rows="2"></textarea></label>
       <p class="form-error" id="requestError" role="alert" hidden></p>
       <button type="submit" class="btn btn-primary btn-block">Send request</button>
       <button type="button" class="btn btn-ghost btn-block" id="cancelRequestBtn">Cancel</button>

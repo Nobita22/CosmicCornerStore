@@ -153,7 +153,9 @@ function cardMedia(p) {
   return p.emoji || "✨";
 }
 
-const escapeAttr = (s) => String(s == null ? "" : s).replace(/"/g, "&quot;");
+// Escapes text for both HTML content and attribute values.
+const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+const escapeAttr = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ESC[c]);
 
 function renderProducts() {
   const grid = $("products");

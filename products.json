@@ -4,7 +4,7 @@
     "name": "Cosmic Ring",
     "category": "Jewellery",
     "price": 299,
-    "emoji": "??",
+    "emoji": "💍",
     "description": "Elegant sterling silver ring with a celestial design. Perfect for cosmic lovers.",
     "tags": [
       "Ring",
@@ -20,7 +20,7 @@
     "name": "Star Necklace",
     "category": "Jewellery",
     "price": 399,
-    "emoji": "?",
+    "emoji": "⭐",
     "description": "Timeless star-shaped pendant necklace. A symbol of hope and guidance.",
     "tags": [
       "Necklace",
@@ -36,7 +36,7 @@
     "name": "Moon Earrings",
     "category": "Jewellery",
     "price": 249,
-    "emoji": "??",
+    "emoji": "🌙",
     "description": "Delicate crescent moon earrings. Perfect for anyone who loves the night sky.",
     "tags": [
       "Earrings"
@@ -51,7 +51,7 @@
     "name": "Galaxy Bracelet",
     "category": "Jewellery",
     "price": 349,
-    "emoji": "??",
+    "emoji": "🪐",
     "description": "Stunning bracelet featuring miniature planets. The universe on your wrist.",
     "tags": [
       "Bracelet",
@@ -67,7 +67,7 @@
     "name": "Celestial Pin",
     "category": "Jewellery",
     "price": 199,
-    "emoji": "?",
+    "emoji": "✨",
     "description": "Shimmering celestial pin to add sparkle to your outfit. A cosmic touch.",
     "tags": [
       "Pin",
@@ -83,7 +83,7 @@
     "name": "Nebula Pendant",
     "category": "Jewellery",
     "price": 379,
-    "emoji": "??",
+    "emoji": "🌌",
     "description": "Colorful nebula-inspired pendant. Wear the cosmos close to your heart.",
     "tags": [
       "Pendant",
@@ -99,7 +99,7 @@
     "name": "Articulated Dragon",
     "category": "Toys",
     "price": 299,
-    "emoji": "??",
+    "emoji": "🐉",
     "description": "Flexible 3D printed dragon that bends and moves. A favourite for collectors.",
     "tags": [
       "Dragon",
@@ -116,7 +116,7 @@
     "name": "Infinity Fidget",
     "category": "Fidgets",
     "price": 149,
-    "emoji": "??",
+    "emoji": "♾️",
     "description": "Satisfying pocket fidget, 3D printed for endless spinning fun.",
     "tags": [
       "Fidget",
@@ -132,7 +132,7 @@
     "name": "Flexi Snake",
     "category": "Toys",
     "price": 199,
-    "emoji": "??",
+    "emoji": "🐍",
     "description": "Flexible articulated snake, printed layer by layer. A great desk buddy.",
     "tags": [
       "Snake",
@@ -148,7 +148,7 @@
     "name": "Modern Mini Vase",
     "category": "Decor",
     "price": 249,
-    "emoji": "??",
+    "emoji": "🏺",
     "description": "Minimal 3D printed decor piece for a modern, clean look.",
     "tags": [
       "Vase",
@@ -165,7 +165,7 @@
     "name": "Mini Animal Set",
     "category": "Sets",
     "price": 399,
-    "emoji": "??",
+    "emoji": "🦊",
     "description": "Cute miniature animal collection - a perfect gift set for kids and collectors.",
     "tags": [
       "Animals",

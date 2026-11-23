@@ -25,3 +25,6 @@ desktop.ini
 *.bak
 # Local order database (customer PII)
 orders.db
+
+# Admin password hash (local only)
+admin_auth.json
