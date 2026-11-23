@@ -665,6 +665,39 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--l
   color: transparent;
 }
 
+/* payment choice + UPI */
+.pay-choice { border: 0; padding: 0; margin: .3rem 0 .6rem; display: flex; flex-direction: column; gap: .5rem; }
+.pay-choice legend { font-size: .85rem; color: var(--muted); font-weight: 500; margin-bottom: .4rem; padding: 0; }
+.pay-option {
+  display: flex; gap: .75rem; align-items: flex-start;
+  padding: .75rem .9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: border-color .2s, background-color .2s;
+}
+.pay-option:has(input:checked) { border-color: var(--gold); background: rgba(233, 196, 106, .06); }
+.pay-option input { margin-top: .3rem; accent-color: var(--gold); width: 18px; height: 18px; flex: none; }
+.pay-option span { display: flex; flex-direction: column; }
+.pay-option small { color: var(--muted); }
+.upi-pay {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+}
+.upi-amount { margin: 0 0 .8rem; }
+.upi-amount strong { font-family: var(--font-display); font-size: 1.2rem; }
+.upi-qr { display: grid; place-items: center; }
+.upi-qr img, .upi-qr canvas {
+  width: 200px; height: 200px;
+  padding: 10px; background: #fff; border-radius: var(--r-sm);
+}
+.upi-id { font-size: .88rem; color: var(--muted); margin: .4rem 0 0; }
+.upi-id span { color: var(--text); }
+.link-btn { border: 0; background: none; color: var(--gold); text-decoration: underline; cursor: pointer; padding: 0 .2rem; }
+.track-awb { font-family: var(--font-display); font-size: .9rem; letter-spacing: .03em; }
+
 /* tracking */
 .track-loading, .track-miss { text-align: center; padding: 1.5rem 0 .5rem; color: var(--muted); }
 .track-miss-icon { font-size: 2rem; }

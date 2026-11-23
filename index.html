@@ -307,6 +307,17 @@
         <label class="field"><span>City</span><input type="text" id="city" required autocomplete="address-level2"></label>
         <label class="field"><span>PIN code</span><input type="text" id="postalCode" required inputmode="numeric" autocomplete="postal-code"></label>
       </div>
+      <fieldset class="pay-choice" id="payChoice" hidden>
+        <legend>How would you like to pay?</legend>
+        <label class="pay-option" id="payUpiOption">
+          <input type="radio" name="payment" value="upi" checked>
+          <span><strong>UPI</strong><small>GPay, PhonePe, Paytm or any UPI app. Pay right after ordering.</small></span>
+        </label>
+        <label class="pay-option" id="payCodOption">
+          <input type="radio" name="payment" value="cod">
+          <span><strong>Cash on delivery</strong><small>Pay when your parcel arrives.</small></span>
+        </label>
+      </fieldset>
       <p class="hint">All fields are required. We'll message you on WhatsApp to confirm your order.</p>
       <p class="form-error" id="checkoutError" role="alert" hidden></p>
       <button type="button" class="btn btn-ghost btn-block" id="copyOrderBtn" hidden>📋 Copy order details</button>
@@ -319,6 +330,15 @@
       <h3>Order placed</h3>
       <p class="muted">Your order number</p>
       <p class="order-id" id="orderIdBox">—</p>
+
+      <div class="upi-pay" id="upiPay" hidden>
+        <p class="upi-amount">Pay <strong id="upiAmount">₹0</strong> to finish your order</p>
+        <div class="upi-qr" id="upiQr" aria-label="UPI QR code"></div>
+        <a class="btn btn-primary btn-block" id="upiLink" href="#">Pay with UPI app</a>
+        <p class="hint">On a computer, scan the code with your phone's UPI app. The amount and order number are filled in for you.</p>
+        <p class="upi-id">UPI ID: <span id="upiIdText"></span> <button type="button" class="link-btn" id="copyUpiBtn">Copy</button></p>
+      </div>
+
       <p class="hint">Save this number. Use Track order any time to see where your order is.</p>
       <button type="button" class="btn btn-primary btn-block" id="trackNowBtn">Track this order</button>
       <button type="button" class="btn btn-ghost btn-block" id="successCloseBtn">Keep shopping</button>

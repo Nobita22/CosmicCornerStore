@@ -68,13 +68,76 @@ async function boot() {
     return;
   }
 
+  state.settings = settings || {};
   $("app").hidden = false;
+  initPayments();
   initStars();
   initHeroControls();
   initDrawer();
   initModalButtons();
   initFilters();
   await loadProducts();
+}
+
+/* ---------------- 1b. payments (UPI / cash on delivery) ---------------- */
+const upiReady = () => /^[A-Za-z0-9._-]{2,64}@[A-Za-z0-9.-]{2,32}$/.test(state.settings.upi_id || "");
+
+function initPayments() {
+  const upi = upiReady();
+  const cod = !!state.settings.cod;
+  $("payUpiOption").hidden = !upi;
+  $("payCodOption").hidden = !cod;
+  $("payChoice").hidden = !(upi && cod);   // only ask when there is a real choice
+  const first = document.querySelector(`input[name="payment"][value="${upi ? "upi" : "cod"}"]`);
+  if (first) first.checked = true;
+}
+
+function selectedPayment() {
+  if (!upiReady() && !state.settings.cod) return "manual";
+  const picked = document.querySelector('input[name="payment"]:checked');
+  return picked ? picked.value : (upiReady() ? "upi" : "cod");
+}
+
+function upiUrl(orderId, amount) {
+  const params = new URLSearchParams({
+    pa: state.settings.upi_id,
+    pn: state.settings.upi_name || "CosmicCorner",
+    am: Number(amount).toFixed(2),
+    cu: "INR",
+    tn: "Order " + orderId,
+  });
+  return "upi://pay?" + params.toString().replace(/\+/g, "%20");
+}
+
+let qrLoader = null;
+function loadQrLib() {
+  if (window.QRCode) return Promise.resolve();
+  if (!qrLoader) {
+    qrLoader = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+      s.onload = resolve;
+      s.onerror = () => { qrLoader = null; reject(new Error("QR library failed to load")); };
+      document.head.appendChild(s);
+    });
+  }
+  return qrLoader;
+}
+
+async function showUpiPayment(orderId, amount) {
+  const url = upiUrl(orderId, amount);
+  $("upiAmount").textContent = rupees(amount);
+  $("upiLink").href = url;
+  $("upiIdText").textContent = state.settings.upi_id;
+  $("upiPay").hidden = false;
+  const box = $("upiQr");
+  box.innerHTML = "";
+  try {
+    await loadQrLib();
+    new window.QRCode(box, { text: url, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff" });
+  } catch (_) {
+    box.hidden = true;   // the "Pay with UPI app" button still works
+  }
 }
 
 /* ---------------- 2. stars ---------------- */
@@ -595,6 +658,12 @@ function initModalButtons() {
     resetCheckout();
   });
   $("checkoutForm").addEventListener("submit", placeOrder);
+  $("copyUpiBtn").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(state.settings.upi_id || "");
+      toast("UPI ID copied", "📋");
+    } catch (_) { /* text stays visible to copy by hand */ }
+  });
 
   /* tracking */
   document.querySelectorAll("[data-open-track]").forEach((el) =>
@@ -740,7 +809,7 @@ async function placeOrder(e) {
     const res = await fetch(ORDER_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: localId, customer, items, total: totalOf(items) }),
+      body: JSON.stringify({ order_id: localId, customer, items, total: totalOf(items), payment: selectedPayment() }),
       signal: controller.signal,
     });
     if (!res.ok) {
@@ -752,6 +821,8 @@ async function placeOrder(e) {
     // The worker is the source of truth: it may issue its own order ID.
     // Using the returned ID keeps Track Order in sync with orders.json.
     const orderId = data.order_id || localId;
+    const amount = typeof data.total === "number" ? data.total : totalOf(items);
+    const payment = selectedPayment();
 
     state.lastOrderId = orderId;
     state.cart = {};
@@ -760,6 +831,8 @@ async function placeOrder(e) {
     $("checkoutForm").hidden = true;
     $("orderIdBox").textContent = orderId;
     $("orderSuccess").hidden = false;
+    $("upiPay").hidden = true;
+    if (payment === "upi" && upiReady()) showUpiPayment(orderId, amount);
     toast("Order placed - " + orderId, "📨");
   } catch (err) {
     const timedOut = err.name === "AbortError";
@@ -897,9 +970,30 @@ function renderTrack(order, query) {
       <div class="track-rows">
         ${order.item_count ? `<div class="track-row"><span>Items</span><span>${order.item_count}</span></div>` : ""}
         ${order.total ? `<div class="track-row"><span>Total</span><span>${rupees(order.total)}</span></div>` : ""}
+        <div class="track-row"><span>Payment</span><span>${paymentLabel(order)}</span></div>
+        ${order.tracking ? `<div class="track-row"><span>${escapeAttr(order.carrier || "Courier")}</span><span class="track-awb">${escapeAttr(order.tracking)}</span></div>` : ""}
         ${order.updated_at ? `<div class="track-row"><span>Last update</span><span>${formatDate(order.updated_at)}</span></div>` : ""}
       </div>
+      ${order.tracking && CARRIER_SITES[order.carrier]
+        ? `<a class="btn btn-ghost btn-block" href="${CARRIER_SITES[order.carrier]}" target="_blank" rel="noopener">Track on ${escapeAttr(order.carrier)}'s website</a>
+           <p class="hint">Enter the tracking number above on their page.</p>`
+        : ""}
     </div>`;
+}
+
+const CARRIER_SITES = {
+  "India Post": "https://www.indiapost.gov.in/",
+  "Delhivery": "https://www.delhivery.com/tracking",
+  "DTDC": "https://www.dtdc.com/track-your-shipment/",
+  "Blue Dart": "https://www.bluedart.com/tracking",
+  "Shiprocket": "https://www.shiprocket.in/shipment-tracking/",
+};
+
+function paymentLabel(order) {
+  if (order.paid) return "Received ✓";
+  if (order.payment === "cod") return "Cash on delivery";
+  if (order.payment === "upi") return "Waiting for UPI payment";
+  return "We'll confirm on WhatsApp";
 }
 
 function formatDate(iso) {
